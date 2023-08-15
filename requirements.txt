@@ -1,0 +1,13 @@
+# Flask Framework
+Flask==2.3.2
+
+#Flask-WTF
+flask-wtf==1.1.1
+
+#waitress
+waitress
+
+#Postgres
+psycopg2
+
+Flask-TinyMCE

@@ -1,0 +1,9 @@
+{
+    "secret_key": "secret",
+    "database": {
+        "host": "localhost",
+        "database": "kerridge-functions",
+        "user": "test",
+        "password": "test"
+    }
+}
