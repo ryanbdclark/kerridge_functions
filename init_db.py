@@ -132,6 +132,25 @@ def connect():
             module varchar(30) NOT NULL,
             function varchar(255) NOT NULL,
             example varchar(140000),
+            title varchar(1000),
+            PRIMARY KEY(sequence)
+        )
+        """
+        )
+
+        cur.execute(
+            """
+        ALTER TABLE examples ADD COLUMN IF NOT EXISTS title varchar(1000)
+        """
+        )
+
+
+        cur.execute(
+            """
+        CREATE TABLE IF NOT EXISTS snippets (
+            sequence SERIAL,
+            title varchar(1000),
+            body varchar,
             PRIMARY KEY(sequence)
         )
         """

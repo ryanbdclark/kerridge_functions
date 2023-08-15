@@ -69,9 +69,11 @@ def execute_search(search_term):
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     response = request.form.to_dict()
     formatted_functions = {}
+    formatted_snippets = {}
     functions = []
+    snippets=[]
 
-    if "search-name" in response.keys():
+    if "search-functions-name" in response.keys():
         cur.execute(
             """SELECT * FROM functions WHERE name ILIKE %s""",
             [
@@ -81,7 +83,7 @@ def execute_search(search_term):
 
         functions.append(cur.fetchall())
 
-    if "search-description" in response.keys():
+    if "search-functions-description" in response.keys():
         cur.execute(
             """SELECT * FROM functions WHERE description ILIKE %s OR detailed_description ILIKE %s""",
             [
@@ -92,7 +94,7 @@ def execute_search(search_term):
 
         functions.append(cur.fetchall())
 
-    if "search-definition" in response.keys():
+    if "search-functions-definition" in response.keys():
         cur.execute(
             """SELECT * FROM functions WHERE definition ILIKE %s""",
             [
@@ -102,10 +104,11 @@ def execute_search(search_term):
 
         functions.append(cur.fetchall())
 
-    if "search-examples" in response.keys():
+    if "search-functions-examples" in response.keys():
         cur.execute(
-            """SELECT * FROM functions LEFT JOIN examples ON functions.module = examples.module AND functions.name = examples.function WHERE example ILIKE %s""",
+            """SELECT * FROM functions LEFT JOIN examples ON functions.module = examples.module AND functions.name = examples.function WHERE example ILIKE %s OR title ILIKE %s""",
             [
+                "%" + search_term + "%",
                 "%" + search_term + "%",
             ],
         )
@@ -114,8 +117,33 @@ def execute_search(search_term):
 
     for function_list in functions:
         formatted_functions = formatted_functions | format_functions(function_list)
+    
+    if "search-snippets-title" in response.keys():
+        cur.execute(
+            """SELECT * FROM snippets WHERE title ILIKE %s""",
+            [
+                "%" + search_term + "%",
+            ],
+        )
 
-    return formatted_functions
+        snippets.append(cur.fetchall())
+
+    if "search-snippets-body" in response.keys():
+        cur.execute(
+            """SELECT * FROM snippets WHERE body ILIKE %s""",
+            [
+                "%" + search_term + "%",
+            ],
+        )
+
+        snippets.append(cur.fetchall())
+
+    for snippet_list in snippets:
+        for snippet_dict in snippet_list:
+            formatted_snippets[snippet_dict['sequence']] = {'title':snippet_dict['title'], 'body':snippet_dict['body']}
+
+    
+    return {"functions":formatted_functions, "snippets":formatted_snippets}
 
 
 def get_functions(module):
@@ -129,6 +157,30 @@ def get_functions(module):
 
     cur.close()
     return formatted_functions
+
+def get_snippets():
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    formatted_functions = {}
+    cur.execute("""SELECT * FROM snippets""")
+
+    snippets = cur.fetchall()
+
+    cur.close()
+    return snippets
+
+def get_snippet(snippet):
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    formatted_functions = {}
+    cur.execute("""SELECT * FROM snippets WHERE sequence = %s""", [snippet])
+
+    snippet = cur.fetchone()
+
+    cur.close()
+    return snippet
 
 
 def get_function(module, function):
@@ -158,14 +210,14 @@ def get_function(module, function):
             formatted_function["params_out"][param["name"]] = param["description"]
 
     cur.execute(
-        """SELECT sequence, example FROM examples WHERE module=%s AND function=%s ORDER BY sequence ASC""",
+        """SELECT sequence, example, title FROM examples WHERE module=%s AND function=%s ORDER BY sequence ASC""",
         [formatted_function["module"], formatted_function["name"]],
     )
 
     examples = cur.fetchall()
 
     for example in examples:
-        formatted_function["examples"][example["sequence"]] = example["example"]
+        formatted_function["examples"][example["sequence"]] = {"title": example["title"], "body":example["example"]}
 
     cur.close()
 
@@ -215,6 +267,62 @@ tinymce.init_app(app)
 def index():
     return render_template("index.html", modules=get_modules())
 
+@app.route("/functions")
+def functions_landing_page():
+    return render_template("functions.html", modules=get_modules())
+
+@app.route("/snippets")
+def snippets():
+    return render_template("snippets.html", snippets=get_snippets())
+
+@app.route("/snippet/<snippet>")
+def snippet(snippet):
+    return render_template("snippet.html", snippet=get_snippet(snippet))
+
+@app.route("/snippets/add", methods=["POST"])
+def add_snippet():
+    response = request.form.to_dict()
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO snippets (title, body) VALUES (%s,%s)",
+        [response["snippet_title"], response["snippet_body"]],
+    )
+
+    cur.close()
+    conn.commit()
+
+    return redirect(url_for("snippets", snippets=get_snippets()))
+
+@app.route(
+    "/snippet/<snippet_sequence>/delete",
+    methods=["POST"],
+)
+def delete_snippet(snippet_sequence):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM snippets WHERE sequence = %s", [snippet_sequence])
+    cur.close()
+    conn.commit()
+    return redirect(url_for("snippets"))
+
+
+@app.route(
+    "/snippet/<snippet_sequence>/edit",
+    methods=["POST"],
+)
+def edit_snippet(snippet_sequence):
+    response = request.form.to_dict()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE snippets SET title=%s, body=%s WHERE sequence = %s",
+        [response["snippet_title"], response["snippet_body"], snippet_sequence],
+    )
+    cur.close()
+    conn.commit()
+    return redirect(url_for("snippet", snippet=snippet_sequence))
 
 @app.route("/module/<module>")
 def module_page(module):
@@ -237,10 +345,9 @@ def view_function(module, function):
 def search():
     search_term = request.form.to_dict()["search"]
     return render_template(
-        "module.html",
-        module=search_term,
-        description="",
-        functions=execute_search(search_term),
+        "search_result.html",
+        search_term=search_term,
+        result=execute_search(search_term),
     )
 
 
@@ -251,8 +358,8 @@ def add_example(module, function):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO examples (module, function, example) VALUES (%s,%s,%s)",
-        [module, function, response["example_text_create"]],
+        "INSERT INTO examples (module, function, example, title) VALUES (%s,%s,%s, %s)",
+        [module, function, response["example_text_create"], response["example_text_create_title"]],
     )
 
     cur.close()
@@ -283,8 +390,8 @@ def edit_example(module, function, example_sequence):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "UPDATE examples SET example=%s WHERE sequence = %s",
-        [response["example_text_edit_" + example_sequence], example_sequence],
+        "UPDATE examples SET example=%s, title=%s WHERE sequence = %s",
+        [response["example_text_edit_" + example_sequence], response["example_text_edit_title_" + example_sequence], example_sequence],
     )
     cur.close()
     conn.commit()

@@ -1,8 +1,21 @@
-#example-button{
-    float:right;
+#example-button {
+    float: right;
     margin-top: 1em;
 }
 
-textarea{
+#edit-snippet-button {
+    float: right;
+    margin-top: 1em;
+}
+
+#add-snippet-button {
+    float: right;
+}
+
+textarea {
     max-width: 100000px;
+}
+
+.container{
+    margin-top: 60px;
 }

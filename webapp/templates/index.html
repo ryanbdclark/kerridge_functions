@@ -1,19 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Module Code
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for module in modules %}
-        <tr>
-            <td><a href="{{ url_for('module_page', module=module['code']) }}">{{ module['code'] }} - {{ module['description'] }}</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<a href="{{url_for('functions_landing_page')}}">Functions</a>
+<br>
+<a href="{{url_for('snippets')}}">Useful Snippets</a>
 {% endblock %}

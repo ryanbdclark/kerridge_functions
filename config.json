@@ -4,6 +4,6 @@
         "host": "localhost",
         "database": "kerridge-functions",
         "user": "test",
-        "password": "test"
+        "password": "password"
     }
 }

@@ -51,18 +51,18 @@
         </div>
     </div>
 </div>
-{% for sequence, example in function["examples"].items() %}
+{% for sequence, example_dict in function["examples"].items() %}
 <div class="accordion" id="exampleAccordian{{ loop.index }}">
     <div class="accordion-item">
         <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                 data-bs-target="#example{{ loop.index }}" aria-expanded="false" aria-controls="example{{ loop.index }}">
-                Example #{{ loop.index }}
+                Example #{{ loop.index }} - {{ example_dict["title"] }}
             </button>
         </h2>
         <div id="example{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#example{{ loop.index }}">
             <div class="accordion-body">
-                {{example|safe}}
+                {{example_dict["body"]|safe}}
                 <br>
                 <button class="btn btn-primary" type="button" data-bs-toggle="modal"
                     data-bs-target="#edit_example_modal_{{sequence}}">Edit</button>
@@ -86,9 +86,20 @@
                     <form method="post"
                         action="{{ url_for('edit_example', module=function['module'], function=function['name'], example_sequence=sequence)}}">
                         <div class="form-group">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label for="example_text_edit_title_{{sequence}}"
+                                        class="col-form-label">Title:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="text" class="form-control" name="example_text_edit_title_{{sequence}}"
+                                        id="example_text_edit_title_{{sequence}}" value="{{example_dict['title']}}"
+                                        required>
+                                </div>
+                            </div>
+                            <br>
                             <textarea style="width: 440px;" class="from-control" id="example_text_edit_{{sequence}}"
-                                name="example_text_edit_{{sequence}}" rows=20>{{example}}</textarea>
-                        </div>
+                                name="example_text_edit_{{sequence}}" rows=20>{{example_dict["body"]}}</textarea>
                 </section>
             </div>
             <div class="modal-footer">
@@ -126,6 +137,16 @@
                     <form method="post"
                         action="{{ url_for('add_example', module=function['module'], function=function['name'])}}">
                         <div class="form-group">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <label for="example_text_create_title" class="col-form-label">Title:</label>
+                                </div>
+                                <div class="col-auto">
+                                    <input type="text" class="form-control" name="example_text_create_title"
+                                        id="example_text_create_title" value="" required>
+                                </div>
+                            </div>
+                            <br>
                             <textarea style="width: 440px;" class="from-control" id="example_text_create"
                                 name="example_text_create" rows=20></textarea>
                 </section>
@@ -142,7 +163,6 @@
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.1/tinymce.min.js"
     integrity="sha512-SJh7xW/9SLzllt0PqjnYlomfUPi7UYF40TXU5m6kVXLFr1hdKe+L8Tqqoi1y9vlsMQBdGC2lZI0d6w04Nn6piQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
