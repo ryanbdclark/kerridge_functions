@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div>
-    <h1>{{ snippet['title'] }} <button id="edit-snippet-button" class="btn btn-primary" type="button" data-bs-toggle="modal"
-        data-bs-target="#edit_snippet_modal">Edit</button></h1>
+<div id="header">
+    <h1>{{ snippet['title'] }} </h1>
+    <button id="edit-snippet-button" class="btn btn-primary" type="button" data-bs-toggle="modal"
+        data-bs-target="#edit_snippet_modal">Edit</button>
 </div>
 <div class="card">
     <div>
@@ -17,8 +18,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="snippetModalLabel">Edit</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">

@@ -1,6 +1,52 @@
 {% extends 'base.html' %}
 {% block content %}
-<a href="{{url_for('functions_landing_page')}}">Functions</a>
-<br>
-<a href="{{url_for('snippets')}}">Useful Snippets</a>
+
+<div class="container my-5">
+    <div class="p-4 text-center bg-body-tertiary rounded-3">
+        <h1 class="text-body-emphasis">About</h1>
+        <p class="col-md-12 mx-auto fs-5 text-muted">
+            This site purpose is to provide end users documentation of functions included in the K8 product from
+            Kerridge Commercial Systems.
+            <br><br>Anyone who has used Kerridge extensively knows that there is little documentation of functions
+            that can be used in the Report Generator and DX applications.
+            <br><br>These functions can be extremely powerful and useful. By extracting these functions
+            this website presents them in a more human readable way, allowing users to also search
+            for specific keywords.
+            <br><br>
+            Users can also add examples to existing functions or submit useful code snippets that they
+            have created.
+        </p>
+    </div>
+</div>
+
+
+<div class="container my-5">
+    <div class="row">
+        <div class="position-relative p-4 text-center text-muted bg-body border border-dashed rounded-5 col-md-6">
+            <h1 class="text-body-emphasis">Functions</h1>
+            <p class="col-lg-6 mx-auto mb-4">
+                For a "complete" list of functions in K8 click below, these functions are sorted by the module they are
+                defined in. Function descriptions and parameters are extracted
+                from the K8 function definition themselves, if these aren't present they will not be displayed.
+            </p>
+            <a href="{{url_for('functions_landing_page')}}">
+                <button class="btn btn-primary px-5 mb-5" type="button">
+                    Explore
+                </button>
+            </a>
+        </div>
+        <div class="position-relative p-4 text-center text-muted bg-body border border-dashed rounded-5 col-md-6">
+            <h1 class="text-body-emphasis">Useful Snippets</h1>
+            <p class="col-lg-6 mx-auto mb-4">
+                Find useful user defined code snippets here! These can be/do anything and are all user submitted.<br>
+                When submitting a snippet please include as much detail as possible.
+            </p>
+            <a href="{{url_for('snippets')}}">
+                <button class="btn btn-primary px-5 mb-5" type="button">
+                    Explore
+                </button>
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

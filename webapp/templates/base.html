@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="dark">
 
 <head>
     {% block head %}
@@ -9,15 +9,24 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel=”stylesheet” href=”https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css” />
     <link rel="stylesheet" href="{{url_for('static', filename= 'css/style.css')}}">
     <title>{% block title %} {% endblock %}</title>
     {% endblock %}
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
+    <button type="button" class="btn btn-primary btn-floating btn-lg" id="btn-back-to-top">
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+            viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+            <path
+                d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
+        </svg>
+    </button>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index')}}">Kerridge Functions</a>
+            <a class="navbar-brand" href="{{ url_for('index')}}">Kerridge Knowledge Base</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -31,57 +40,63 @@
                         <a class="nav-link" href="{{ url_for('snippets') }}">Snippets</a>
                     </li>
                 </ul>
-                <form class="d-flex" role="search" action="{{ url_for('search') }}" method="post">
-                    <input type="search" class="form-control me-2" placeholder="Search" aria-label="Search"
-                        aria-describedby="search-addon" id="search" name="search" />
-                    <div class="btn-group">
-                        <button type="submit" class="btn btn-outline-primary">Search</button>
+                <form class="d-flex" role="search" id="search-form" action="{{ url_for('search') }}" method="post">
+                    <div class="input-group">
+                        <input type="search" class="form-control" placeholder="Search" aria-label="Search"
+                            aria-describedby="search-addon" id="search" name="search" />
+                        <button type="submit" class="btn btn-outline-primary" onclick="setCookies();">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-search" viewBox="0 0 16 16">
+                                <path
+                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                            </svg>
+                        </button>
                         <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <span class="visually-hidden">Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li>Functions</li>
+                            <li class="dropdown-header">Functions</li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
-                                            checked id="search-functions-name" name="search-functions-name" /><label
+                                            id="search-check-functions-name" name="search-functions-name" /><label
                                             class="form-check-label" for="search-functions-name">Name</label></label>
                                     </div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
-                                            checked id="search-functions-description"
+                                            id="search-check-functions-description"
                                             name="search-functions-description" /><label class="form-check-label"
                                             for="search-functions-description">Description</label></label></div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
-                                            id="search-functions-definition" name="search-functions-definition" /><label
-                                            class="form-check-label"
+                                            id="search-check-functions-definition"
+                                            name="search-functions-definition" /><label class="form-check-label"
                                             for="search-functions-definition">Definition</label></label></div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
-                                            id="search-functions-examples" name="search-functions-examples" /><label
-                                            class="form-check-label"
+                                            id="search-check-functions-examples"
+                                            name="search-functions-examples" /><label class="form-check-label"
                                             for="search-functions-examples">Examples</label></label></div>
                                 </a></li>
-                            <li>Snippets</li>
+                            <li class="dropdown-header">Snippets</li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
-                                            checked id="search-snippets-title" name="search-snippets-title" /><label
+                                            id="search-check-snippets-title" name="search-snippets-title" /><label
                                             class="form-check-label" for="search-snippets-title">Title</label></label>
                                     </div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
-                                            checked id="search-snippets-body" name="search-snippets-body" /><label
+                                            id="search-check-snippets-body" name="search-snippets-body" /><label
                                             class="form-check-label" for="search-snippets-body">Body</label></label>
                                     </div>
                                 </a></li>
@@ -92,19 +107,8 @@
             </div>
         </div>
     </nav>
-    <main class="container">
+    <main class="container" id="main-container">
         <div>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
             {% block content %} {% endblock %}
         </div>
     </main>
@@ -120,5 +124,88 @@
         crossorigin="anonymous"></script>
 
 </body>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('search-check-functions-name').checked = getCookie('search-functions-name');
+        document.getElementById('search-check-functions-description').checked = getCookie('search-functions-description');
+        document.getElementById('search-check-functions-definition').checked = getCookie('search-functions-definition');
+        document.getElementById('search-check-functions-examples').checked = getCookie('search-functions-examples');
+        document.getElementById('search-check-snippets-title').checked = getCookie('search-snippets-title');
+        document.getElementById('search-check-snippets-body').checked = getCookie('search-snippets-body');
+    })
+</script>
+
+<script>
+    function getCookie(name) {
+        // Split cookie string and get all individual name=value pairs in an array
+        var cookieArr = document.cookie.split(";");
+
+        // Loop through the array elements
+        for (var i = 0; i < cookieArr.length; i++) {
+            var cookiePair = cookieArr[i].split("=");
+
+            /* Removing whitespace at the beginning of the cookie name
+            and compare it with the given string */
+            if (name == cookiePair[0].trim()) {
+                // Decode the cookie value and return
+                let cookie = decodeURIComponent(cookiePair[1]);
+
+                var cookieValue = '';
+                if (cookie == 'true') {
+                    cookieValue = 'checked'
+                }
+                return cookieValue;
+            }
+        }
+
+        // Return null if not found
+        return null;
+    }
+</script>
+
+<script>
+    function setCookies() {
+        setCookie('search-functions-name', document.getElementById('search-check-functions-name').checked);
+        setCookie('search-functions-description', document.getElementById('search-check-functions-description').checked);
+        setCookie('search-functions-definition', document.getElementById('search-check-functions-definition').checked);
+        setCookie('search-functions-examples', document.getElementById('search-check-functions-examples').checked);
+        setCookie('search-snippets-title', document.getElementById('search-check-snippets-title').checked);
+        setCookie('search-snippets-body', document.getElementById('search-check-snippets-body').checked);
+    }
+
+    function setCookie(cName, cValue) {
+        document.cookie = cName + "=" + cValue + "; max-age=34560000; path=/";
+    }
+
+</script>
+
+<script>
+    let mybutton = document.getElementById("btn-back-to-top");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () {
+        scrollFunction();
+    };
+
+    function scrollFunction() {
+        if (
+            document.body.scrollTop > 20 ||
+            document.documentElement.scrollTop > 20
+        ) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+    // When the user clicks on the button, scroll to the top of the document
+    mybutton.addEventListener("click", backToTop);
+
+    function backToTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
+
 
 </html>

@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<div id="header">
+    <h1>Snippets</h1>
+    <button id="add-snippet-button" class="btn btn-primary" type="button" data-bs-toggle="modal"
+        data-bs-target="#create_snippet_modal">Add Snippet</button>
+</div>
+
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                Snippet
-                <button id="add-snippet-button" class="btn btn-primary" type="button" data-bs-toggle="modal"
-                data-bs-target="#create_snippet_modal">Add Snippet</button>
-            </th>
-        </tr>
-    </thead>
     <tbody>
         {% for snippet in snippets %}
         <tr>
@@ -25,29 +23,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="snippetModalLabel">Add Example</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
             <div class="modal-body">
                 <section class="create-user-form container">
-                    <form method="post"
-                        action="{{ url_for('add_snippet')}}">
+                    <form method="post" action="{{ url_for('add_snippet')}}">
                         <div class="form-group">
                             <div class="row g-3 align-items-center">
                                 <div class="col-auto">
-                                    <label for="snippet_title"
-                                        class="col-form-label">Title:</label>
+                                    <label for="snippet_title" class="col-form-label">Title:</label>
                                 </div>
                                 <div class="col-auto">
-                                    <input type="text" class="form-control" name="snippet_title"
-                                        id="snippet_title" value=""
-                                        required>
+                                    <input type="text" class="form-control" name="snippet_title" id="snippet_title"
+                                        value="" required>
                                 </div>
                             </div>
                             <br>
-                            <textarea style="width: 440px;" class="from-control" id="snippet_body"
-                                name="snippet_body" rows=20></textarea>
+                            <textarea style="width: 440px;" class="from-control" id="snippet_body" name="snippet_body"
+                                rows=20></textarea>
                 </section>
             </div>
             <div class="modal-footer">

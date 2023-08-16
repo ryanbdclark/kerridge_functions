@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>{{ search_term }}</h1>
-
+<div class="header">
+    <h1>{{ search_term }}</h1>
+</div>
 {% if result["functions"]|length > 0 %}
 <div class="accordion accordian-flush" id="functionTopAccordian">
     <div class="accordion-item">
