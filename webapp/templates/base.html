@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en" data-bs-theme="dark">
+    <title>Kerridge Knowledge base</title>
 
 <head>
     {% block head %}
@@ -16,7 +17,7 @@
 </head>
 
 <body>
-    <button type="button" class="btn btn-primary btn-floating btn-lg" id="btn-back-to-top">
+    <button type="button" class="btn btn-primary btn-floating btn-lg" id="btn-back-to-top" title="'back-to-top-button">
         <svg xmlns="http://www.w3.org/2000/svg" height="1em"
             viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
             <path
@@ -44,7 +45,7 @@
                     <div class="input-group">
                         <input type="search" class="form-control" placeholder="Search" aria-label="Search"
                             aria-describedby="search-addon" id="search" name="search" />
-                        <button type="submit" class="btn btn-outline-primary" onclick="setCookies();">
+                        <button type="submit" class="btn btn-outline-primary" name="search-button" title="'search-button" onclick="setCookies();">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-search" viewBox="0 0 16 16">
                                 <path
@@ -63,26 +64,26 @@
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
                                             id="search-check-functions-name" name="search-functions-name" /><label
-                                            class="form-check-label" for="search-functions-name">Name</label></label>
+                                            class="form-check-label" for="search-check-functions-name">Name</label></label>
                                     </div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
                                             id="search-check-functions-description"
                                             name="search-functions-description" /><label class="form-check-label"
-                                            for="search-functions-description">Description</label></label></div>
+                                            for="search-check-functions-description">Description</label></label></div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
                                             id="search-check-functions-definition"
                                             name="search-functions-definition" /><label class="form-check-label"
-                                            for="search-functions-definition">Definition</label></label></div>
+                                            for="search-check-functions-definition">Definition</label></label></div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
                                             id="search-check-functions-examples"
                                             name="search-functions-examples" /><label class="form-check-label"
-                                            for="search-functions-examples">Examples</label></label></div>
+                                            for="search-check-functions-examples">Examples</label></label></div>
                                 </a></li>
                             <li class="dropdown-header">Snippets</li>
                             <li>
@@ -91,13 +92,13 @@
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
                                             id="search-check-snippets-title" name="search-snippets-title" /><label
-                                            class="form-check-label" for="search-snippets-title">Title</label></label>
+                                            class="form-check-label" for="search-check-snippets-title">Title</label></label>
                                     </div>
                                 </a></li>
                             <li><a class="dropdown-item" href="#">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" value=""
                                             id="search-check-snippets-body" name="search-snippets-body" /><label
-                                            class="form-check-label" for="search-snippets-body">Body</label></label>
+                                            class="form-check-label" for="search-check-snippets-body">Body</label></label>
                                     </div>
                                 </a></li>
                         </ul>
@@ -160,11 +161,10 @@
         }
 
         // Return null if not found
-        return null;
+        setCookie(name, 'true');
+        return getCookie(name);
     }
-</script>
 
-<script>
     function setCookies() {
         setCookie('search-functions-name', document.getElementById('search-check-functions-name').checked);
         setCookie('search-functions-description', document.getElementById('search-check-functions-description').checked);
